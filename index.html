@@ -1,129 +1,99 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="th">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>รักเค้าไหม?</title>
-  <!-- วิธีใช้งาน/แชร์ให้คนอื่น (อยู่ในคอมเมนต์นี้):
-    1) กดปุ่ม Copy ทั้งไฟล์นี้ แล้วเซฟเป็นชื่อ "index.html" บนคอม/มือถือของคุณ
-    2) ส่งไฟล์ index.html ให้เพื่อนทาง LINE/Discord/อีเมล หรืออัปโหลดไว้ที่ Google Drive แล้วแชร์ลิงก์ก็ได้
-    3) หรือจะโฮสต์แบบลิงก์สาธารณะ:
-       - Netlify: ลากไฟล์ index.html ไปปล่อยที่ https://app.netlify.com/drop
-       - GitHub Pages: สร้าง repo แล้วใส่ไฟล์ index.html จากนั้นเปิด Pages
-       - Vercel: สร้างโปรเจกต์แบบ Static แล้วอัปโหลดไฟล์ index.html
-  -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>เช็กลิสต์งาน</title>
   <style>
-    :root{--bg1:#ffe4ec;--bg2:#ffd6e7;--pink:#f43f5e;--pink-100:#ffe4ea;--pink-200:#ffc9d5;--txt:#333;--muted:#6b7280}
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0;
-      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
-      background: linear-gradient(180deg,var(--bg1),var(--bg2));
-      display:grid; place-items:center; padding:24px;
-      color:var(--txt);
-    }
-    .card{
-      width:min(560px,100%);
-      background:rgba(255,255,255,.92);
-      backdrop-filter:saturate(150%) blur(6px);
-      border:1px solid var(--pink-200);
-      border-radius:20px;
-      box-shadow:0 10px 30px rgba(244,63,94,.15);
-      padding:28px;
-    }
-    h1{margin:8px 0 4px; font-size:clamp(24px,4vw,34px)}
-    p.lead{margin:0 0 18px; color:var(--muted)}
-    .row{display:flex; justify-content:center; align-items:center; gap:14px}
-    button{
-      cursor:pointer; border:0; padding:12px 22px; border-radius:16px; font-size:18px;
-      transition:transform .12s ease, opacity .12s ease, box-shadow .2s ease;
-      box-shadow:0 6px 16px rgba(0,0,0,.08);
-    }
-    button:active{transform:scale(.97)}
-    .yes{background:var(--pink); color:#fff}
-    .yes:hover{box-shadow:0 10px 22px rgba(244,63,94,.25)}
-    .no{background:#e5e7eb; color:#374151}
-    .center{display:grid; justify-items:center}
-    .toast{
-      display:inline-grid; grid-auto-flow:column; gap:8px; align-items:center;
-      background:var(--pink-100); color:#9f1239; border:1px solid var(--pink-200);
-      border-radius:16px; padding:10px 14px; box-shadow:0 6px 16px rgba(244,63,94,.12);
-      font-size:18px
-    }
-    .muted{font-size:12px; color:#9ca3af; text-align:center}
-    .link{color:#374151}
-    .reset{background:transparent; color:#6b7280; text-decoration:underline; text-underline-offset:3px; box-shadow:none; font-size:12px}
+    body { font-family: sans-serif; background:#f8fafc; color:#111827; margin:0; padding:1rem; }
+    h1 { font-size:1.5rem; margin-bottom:0.25rem; }
+    .progress { background:#e5e7eb; border-radius:8px; overflow:hidden; height:12px; }
+    .progress-bar { background:#22c55e; height:100%; }
+    .task { background:#fff; border-radius:12px; box-shadow:0 1px 2px rgba(0,0,0,0.1); padding:1rem; margin-bottom:1rem; }
+    .task h3 { margin:0; font-size:1rem; }
+    .task small { color:#6b7280; }
+    textarea { width:100%; min-height:60px; margin-top:0.5rem; }
+    .topbar { display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem; }
+    button { margin-left:0.5rem; }
   </style>
 </head>
 <body>
-  <main class="card" aria-live="polite">
-    <h1 style="text-align:center">รักเค้าไหม?</h1>
-    <p class="lead" style="text-align:center">เลือกคำตอบด้านล่างได้เลยนะ ❤️</p>
-
-    <div class="row" style="margin:14px 0 4px">
-      <button id="btnYes" class="yes">รัก</button>
-      <button id="btnNo" class="no">ไม่</button>
-      <span id="noGoneMsg" class="muted" style="display:none">(ตัวเลือกนี้หายไปแล้ว 😅)</span>
+  <div class="topbar">
+    <div>
+      <h1>เช็กลิสต์งาน</h1>
+      <p style="color:#6b7280">ติ๊กสิ่งที่ทำแล้ว บันทึกโน้ตได้</p>
     </div>
-
-    <div id="result" class="center" style="margin-top:18px; min-height:44px"></div>
-
-    <div class="center" style="margin-top:14px">
-      <button id="btnReset" class="reset">เริ่มใหม่อีกครั้ง</button>
+    <div>
+      <button onclick="addTask()">+ เพิ่มงาน</button>
+      <button onclick="resetAll()">รีเซ็ตทั้งหมด</button>
     </div>
+  </div>
 
-    <p class="muted" style="margin-top:10px">ทิป: เอาเมาส์ไปจ่อที่ปุ่ม “ไม่” ดูสิ 😉</p>
-  </main>
+  <div>
+    <div style="margin-bottom:0.5rem; display:flex; justify-content:space-between;">
+      <span><b>ความคืบหน้า</b></span>
+      <span id="progressText">0%</span>
+    </div>
+    <div class="progress"><div id="progressBar" class="progress-bar" style="width:0%"></div></div>
+  </div>
 
-  <script>
-    const btnYes = document.getElementById('btnYes');
-    const btnNo = document.getElementById('btnNo');
-    const result = document.getElementById('result');
-    const noGoneMsg = document.getElementById('noGoneMsg');
-    const btnReset = document.getElementById('btnReset');
+  <div id="taskList"></div>
 
-    let noScale = 1;
-    let noGone = false;
+<script>
+const STORAGE_KEY = "checklist-v1";
+let tasks = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null") || [
+  {id:"t1", title:"ตัวอย่างงาน", note:"", done:false}
+];
 
-    function shrinkNo(){
-      if(noGone) return;
-      noScale = noScale * 0.86; // ค่อยๆ เล็กลง
-      if(noScale < 0.18){
-        btnNo.style.transform = 'scale(0)';
-        btnNo.style.opacity = '0';
-        btnNo.style.display = 'none';
-        noGone = true;
-        noGoneMsg.style.display = 'inline';
-      } else {
-        btnNo.style.transform = `scale(${noScale})`;
-        btnNo.style.opacity = String(Math.max(noScale, 0.15));
-      }
-    }
+function save(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks)); }
 
-    function resetAll(){
-      result.innerHTML = '';
-      noScale = 1;
-      noGone = false;
-      btnNo.style.transform = 'scale(1)';
-      btnNo.style.opacity = '1';
-      btnNo.style.display = '';
-      noGoneMsg.style.display = 'none';
-    }
+function toggleTask(id){
+  tasks = tasks.map(t => t.id===id? {...t, done:!t.done}:t);
+  render();
+}
 
-    btnYes.addEventListener('click', () => {
-      result.innerHTML = `<div class="toast"><span>เย้! รักเหมือนกันนะ</span><span style="font-size:22px">💖</span></div>`;
-    });
+function updateNote(id, note){
+  tasks = tasks.map(t => t.id===id? {...t, note}:t);
+  save();
+}
 
-    // ทำให้ปุ่ม "ไม่" เล็กลงเรื่อยๆ ทั้งตอนเลื่อนเข้า/ขยับ/พยายามคลิก
-    ['mouseenter','mousemove','mousedown','click','touchstart'].forEach(evt => {
-      btnNo.addEventListener(evt, (e) => {
-        if(evt==='click' || evt==='mousedown') e.preventDefault();
-        shrinkNo();
-      }, {passive:true});
-    });
+function addTask(){
+  const id = "t"+Math.random().toString(36).substr(2,6);
+  tasks.push({id, title:"งานใหม่", note:"", done:false});
+  render();
+}
 
-    btnReset.addEventListener('click', resetAll);
-  </script>
+function resetAll(){
+  if(confirm("ล้างสถานะทั้งหมด?")){
+    tasks = [];
+    render();
+  }
+}
+
+function render(){
+  const list = document.getElementById("taskList");
+  list.innerHTML = "";
+  tasks.forEach(t => {
+    const div = document.createElement("div");
+    div.className = "task";
+    div.innerHTML = `
+      <label>
+        <input type="checkbox" ${t.done?"checked":""} onchange="toggleTask('${t.id}')" />
+        <h3 style="display:inline">${t.title}</h3>
+      </label>
+      <div><small>โน้ต:</small></div>
+      <textarea onchange="updateNote('${t.id}', this.value)">${t.note||""}</textarea>
+    `;
+    list.appendChild(div);
+  });
+  const done = tasks.filter(t=>t.done).length;
+  const pct = tasks.length? Math.round(done/tasks.length*100):0;
+  document.getElementById("progressBar").style.width = pct+"%";
+  document.getElementById("progressText").innerText = pct+"%";
+  save();
+}
+
+render();
+</script>
 </body>
 </html>
